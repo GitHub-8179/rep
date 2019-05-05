@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzkj.reptile.dao.ArticleMapper">
+    <resultMap id="BaseResultMap" type="com.zzkj.reptile.entity.Article">
+        <result column="article_id" jdbcType="VARCHAR" property="articleId" />
+        <result column="article_type_id" jdbcType="VARCHAR" property="articleTypeId" />
+        <result column="article_title" jdbcType="VARCHAR" property="articleTitle" />
+        <result column="article_keyword" jdbcType="VARCHAR" property="articleKeyword" />
+        <result column="author" jdbcType="VARCHAR" property="author" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="source" jdbcType="VARCHAR" property="source" />
+        <result column="share_count" jdbcType="DOUBLE" property="shareCount" />
+        <result column="collect_count" jdbcType="DOUBLE" property="collectCount" />
+        <result column="collect_initcount" jdbcType="DOUBLE" property="collectInitcount" />
+        <result column="share_initcount" jdbcType="DOUBLE" property="shareInitcount" />
+        <result column="content_type" jdbcType="DOUBLE" property="contentType" />
+        <result column="content_manual" jdbcType="VARCHAR" property="contentManual" />
+        <result column="content_readcount" jdbcType="DOUBLE" property="contentReadcount" />
+        <result column="content_excerpt" jdbcType="VARCHAR" property="contentExcerpt" />
+        <result column="image_path" jdbcType="VARCHAR" property="imagePath" />
+        <result column="state" jdbcType="DOUBLE" property="state" />
+        <result column="details_path" jdbcType="VARCHAR" property="detailsPath" />
+        <result column="get_state" jdbcType="DOUBLE" property="getState" />
+
+    </resultMap>
+    <select id="selectByExample" parameterType="com.zzkj.reptile.entity.Article" resultMap="BaseResultMap">
+        select
+        article_id, article_type_id, article_title, article_keyword, author, update_time,
+        create_time, source, share_count, collect_count, collect_initcount, share_initcount,
+        content_type, content_manual, content_readcount, content_excerpt, image_path, state,
+        details_path,get_state
+        from article1 where
+        <choose>
+            <when test="getState != 10 ">
+                get_state &lt; #{getState,jdbcType=INTEGER}
+                and state = #{state,jdbcType=INTEGER}
+            </when>
+            <otherwise>
+                 get_state &gt;= 3
+                and state != 1
+            </otherwise>
+        </choose>
+
+        and article_type_id % #{serverNum,jdbcType=INTEGER}=#{remainderNum,jdbcType=INTEGER}
+    </select>
+
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.zzkj.reptile.entity.ArticleWithBLOBs">
+        <result column="content_crawl" jdbcType="LONGVARBINARY" property="contentCrawl" />
+        <result column="details_txt" jdbcType="LONGVARBINARY" property="detailsTxt" />
+        <result column="details_div" jdbcType="LONGVARBINARY" property="detailsDiv" />
+    </resultMap>
+
+
+
+    <resultMap id="getData" type="com.zzkj.reptile.entity.ArticleWithBLOBs">
+        <result column="article_id" jdbcType="VARCHAR" property="articleId" />
+        <result column="article_type_id" jdbcType="DOUBLE" property="articleTypeId" />
+        <result column="article_keyword" jdbcType="VARCHAR" property="articleKeyword" />
+        <result column="details_txt" jdbcType="LONGVARBINARY" property="detailsTxt" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    article_id, article_type_id, article_title, article_keyword, author, update_time,
+    create_time, source, share_count, collect_count, collect_initcount, share_initcount,
+    content_type, content_manual, content_readcount, content_excerpt, image_path, state,
+    details_path,get_state
+  </sql>
+
+
+    <sql id="Blob_Column_List">
+    content_crawl, details_txt, details_div
+  </sql>
+
+
+
+    <update id="setGetStartAdd" parameterType="java.lang.String">
+        update article1 set get_state = get_state+1 where article_id = #{articleId,jdbcType=VARCHAR}
+    </update>
+
+
+
+
+    <update id="updateByDetails" parameterType="map">
+        update article1
+        set
+        state = #{record.state,jdbcType=DOUBLE},
+        update_time = now() ,
+        details_txt = #{record.detailsTxt,jdbcType=LONGVARBINARY},
+        details_size = #{record.collectInitcount,jdbcType=DOUBLE},
+        details_div = #{record.detailsDiv,jdbcType=LONGVARBINARY}
+        where article_id = #{record.articleId,jdbcType=VARCHAR}
+    </update>
+
+
+</mapper>

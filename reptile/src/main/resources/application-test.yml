@@ -1,0 +1,76 @@
+server:
+ #端口号
+ port: 9999
+ #项目名，如果不设定，默认是 /
+ # context-path: /vote
+
+ #http://www.cnblogs.com/bigdataZJ/p/springboot-log.html
+logging:
+ ##日志存储地址
+ file: E:/logs/reptiles1.log
+ level:
+  #  sun: warn
+  orgSpringframework: info
+  #  root: debug
+  com.reptile: INFO
+#  pattern:
+#    console: %d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n
+#    pattern: file=%d{yyyy/MM/dd-HH:mm} [%thread] %-5level %logger- %msg%n
+
+
+
+
+#公共配置与profiles选择无关 mapperLocations指的路径是src/main/resources
+mybatis:
+ typeAliasesPackage: com.zzkj.reptile.entity
+ mapperLocations: classpath:mapper/*.xml
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configLocation: classpath:/mybatis/mybatis-config.xml
+
+## 该配置节点为独立的节点，有很多同学容易将这个配置放在spring的节点下，导致配置无法被识别
+#mybatis:
+#  mapper-locations: classpath:mapping/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+#  type-aliases-package: com.winter.model  # 注意：对应实体类的路径
+#  configLocation: classpath:mybatis-config.xml
+
+
+
+#开发配置
+spring:
+ datasource:
+  #url: jdbc:mysql://localhost:3306/test
+  #    url: jdbc:mysql://106.2.11.94:3306/zz_wechat?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone = GMT
+  url: jdbc:mysql://106.2.13.148:3306/chat?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT
+  username: root
+  password: 123&456
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  # 使用druid数据源
+  type: com.alibaba.druid.pool.DruidDataSource
+  druid:
+   test-on-borrow: true
+   test-while-idle: true
+   initial-size: 4
+   min-idle: 2
+
+
+#pagehelper分页插件
+pagehelper:
+ helperDialect: mysql
+ reasonable: true
+ supportMethodsArguments: true
+ params: count=countSql
+
+
+
+
+KEYWORK_NUM: 10
+INTERVAL_DAY: 27
+
+#文章概要扫描
+ArticleTask: 0 0 0/1 * * ?
+#定时更新ip
+setIpPost: 0 0 5,9,16,23 * * ?
+
+
+
